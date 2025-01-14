@@ -1,0 +1,6 @@
+{
+	"node": "n8n-nodes-websocket-ws.websocketTrigger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development"]
+}
