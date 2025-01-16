@@ -15,12 +15,13 @@ export class WebsocketTrigger implements INodeType {
 		icon: 'file:websocket.svg',
 		group: ['trigger'],
 		version: 1,
-		description: 'Connect to ws endpoint and trigger flow on incoming message',
+		description: 'Connect to ws endpoint and trigger flow both on connection or incoming message',
 		defaults: {
-			name: 'On Websocket Message',
+			name: 'Websocket Connection & Message',
 		},
 		inputs: [],
-		outputs: ['main'],
+		outputs: ['main', 'main'],
+		outputNames: ['message', 'connection'],
 		properties: [
 			{
 				displayName: 'Websocket URL',
@@ -29,6 +30,26 @@ export class WebsocketTrigger implements INodeType {
 				default: '',
 				placeholder: 'wss://example.com/',
 				description: 'The URL of the websocket server to connect to',
+			},
+			{
+				displayName: 'Send Initial Message',
+				name: 'sendInitMessage',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to send message immediately upon connecting',
+			},
+			{
+				displayName: 'Initial Message',
+				name: 'initMessage',
+				type: 'string',
+				displayOptions: {
+					show: {
+						sendInitMessage: [true],
+					},
+				},
+				required: true,
+				default: '{}',
+				description: 'Message to send',
 			},
 		],
 	};
@@ -39,6 +60,8 @@ export class WebsocketTrigger implements INodeType {
 		const startConsumer = async () => {
 			try {
 				const websocketUrl = this.getNodeParameter('websocketUrl') as string;
+				const sendInitMessage = this.getNodeParameter('sendInitMessage') as boolean;
+				const initMessage = this.getNodeParameter('initMessage') as string;
 				ws = new WebSocket(websocketUrl);
 
 				ws.on('error', (error: {
@@ -59,8 +82,37 @@ export class WebsocketTrigger implements INodeType {
 						console.warn('Unable to json parse websocket message: ' + message)
 					}
 
-					this.emit([this.helpers.returnJsonArray([message, ws])]);
+					this.emit([
+						this.helpers.returnJsonArray([
+							{
+								message,
+								ws,
+							},
+						]),
+						this.helpers.returnJsonArray([
+							{
+								ws,
+							},
+						])
+					]);
 				});
+
+				ws.on('open', () => {
+					console.log('[WS] connected');
+
+					if(sendInitMessage) {
+						ws.send(initMessage)
+					}
+
+					this.emit([
+						this.helpers.returnJsonArray([]),
+						this.helpers.returnJsonArray([
+							{
+								ws,
+							},
+						])
+					]);
+				})
 			} catch (error) {
 				throw new NodeOperationError(
 					this.getNode(),

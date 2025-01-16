@@ -51,57 +51,69 @@ export class Websocket implements INodeType {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
-		let resource: string;
-		let operation: string;
-
-		// For Post
-		let body: IDataObject;
-		// For Query string
-		let qs: IDataObject;
-
-		let requestMethod: IHttpRequestMethods;
-		let endpoint: string;
-		let returnAll = false;
-		let dataKey: string | undefined;
+		// let resource: string;
+		// let operation: string;
+		//
+		// // For Post
+		// let body: IDataObject;
+		// // For Query string
+		// let qs: IDataObject;
+		//
+		// let requestMethod: IHttpRequestMethods;
+		// let endpoint: string;
+		// let returnAll = false;
+		// let dataKey: string | undefined;
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				dataKey = undefined;
-				resource = this.getNodeParameter('resource', 0);
-				operation = this.getNodeParameter('operation', 0);
+				// dataKey = undefined;
+				// resource = this.getNodeParameter('resource', 0);
+				// operation = this.getNodeParameter('operation', 0);
+				// const message = this.getNodeParameter('message') as string;
 
-				requestMethod = 'GET';
-				endpoint = '';
-				body = {} as IDataObject;
-				qs = {} as IDataObject;
+				// @ts-ignore
+				items[i].json.ws?.send(`{
+  "method": "SUBSCRIBE",
+  "params": [
+    "btcusdt@depth"
+  ],
+  "id": 1
+}`);
 
-				console.log(body, qs, requestMethod, endpoint, returnAll, dataKey);
+				returnData.push({json:{success: true}})
 
-				if (resource === 'message') {
-					if (operation === 'send') {
-						// ----------------------------------
-						//         contact:create
-						// ----------------------------------
-
-						// requestMethod = 'POST';
-						//
-						// const updateIfExists = this.getNodeParameter('updateIfExists', i) as boolean;
-						// if (updateIfExists) {
-						// 	endpoint = '/api/3/contact/sync';
-						// } else {
-						// 	endpoint = '/api/3/contacts';
-						// }
-						//
-						// dataKey = 'contact';
-						//
-						// body.contact = {
-						// 	email: this.getNodeParameter('email', i) as string,
-						// } as IDataObject;
-						//
-						// const additionalFields = this.getNodeParameter('additionalFields', i);
-						// addAdditionalFields(body.contact as IDataObject, additionalFields);
-					}
-				}
+				// requestMethod = 'GET';
+				// endpoint = '';
+				// body = {} as IDataObject;
+				// qs = {} as IDataObject;
+				//
+				// console.log(body, qs, requestMethod, endpoint, returnAll, dataKey);
+				//
+				// if (resource === 'message') {
+				// 	if (operation === 'send') {
+				// 		// ----------------------------------
+				// 		//         contact:create
+				// 		// ----------------------------------
+				//
+				// 		// requestMethod = 'POST';
+				// 		//
+				// 		// const updateIfExists = this.getNodeParameter('updateIfExists', i) as boolean;
+				// 		// if (updateIfExists) {
+				// 		// 	endpoint = '/api/3/contact/sync';
+				// 		// } else {
+				// 		// 	endpoint = '/api/3/contacts';
+				// 		// }
+				// 		//
+				// 		// dataKey = 'contact';
+				// 		//
+				// 		// body.contact = {
+				// 		// 	email: this.getNodeParameter('email', i) as string,
+				// 		// } as IDataObject;
+				// 		//
+				// 		// const additionalFields = this.getNodeParameter('additionalFields', i);
+				// 		// addAdditionalFields(body.contact as IDataObject, additionalFields);
+				// 	}
+				// }
 
 				// let responseData;
 				// if (returnAll) {

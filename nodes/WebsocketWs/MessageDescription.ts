@@ -25,16 +25,31 @@ export const messageOperations: INodeProperties[] = [
 
 export const messageFields: INodeProperties[] = [
 	{
-		displayName: 'Return All',
-		name: 'returnAll',
-		type: 'boolean',
+		displayName: 'Websocket Resource',
+		name: 'websocketResource',
+		type: 'string',
 		displayOptions: {
 			show: {
 				operation: ['send'],
 				resource: ['message'],
 			},
 		},
-		default: false,
-		description: 'Whether to return all results or only up to a given limit',
-	}
+		required: true,
+		default: 'ws',
+		description: 'WS resource field name given by trigger node',
+	},
+	{
+		displayName: 'Message',
+		name: 'message',
+		type: 'json',
+		displayOptions: {
+			show: {
+				operation: ['send'],
+				resource: ['message'],
+			},
+		},
+		required: true,
+		default: '{}',
+		description: 'Message to send',
+	},
 ];
