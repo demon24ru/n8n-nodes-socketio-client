@@ -15,13 +15,13 @@ export class WebsocketTrigger implements INodeType {
 		icon: 'file:websocket.svg',
 		group: ['trigger'],
 		version: 1,
-		description: 'Connect to ws endpoint and trigger flow both on connection or incoming message',
+		description: 'Connect to ws endpoint and trigger flow both on incoming message or websocket opening/closing',
 		defaults: {
 			name: 'Websocket Connection & Message',
 		},
 		inputs: [],
-		outputs: ['main', 'main'],
-		outputNames: ['message', 'connection'],
+		outputs: ['main', 'main', 'main'],
+		outputNames: ['message', 'open', 'close'],
 		properties: [
 			{
 				displayName: 'Websocket URL',
@@ -57,16 +57,19 @@ export class WebsocketTrigger implements INodeType {
 	async trigger(this: ITriggerFunctions): Promise<ITriggerResponse> {
 		let ws: any = null;
 
+		let websocketUrl: string;
+		let sendInitMessage: boolean;
+		let initMessage : string;
+
 		const startConsumer = async () => {
 			try {
-				const websocketUrl = this.getNodeParameter('websocketUrl') as string;
-				const sendInitMessage = this.getNodeParameter('sendInitMessage') as boolean;
-				const initMessage = this.getNodeParameter('initMessage') as string;
+				websocketUrl = this.getNodeParameter('websocketUrl') as string;
+				sendInitMessage = (this.getNodeParameter('sendInitMessage') || false) as boolean;
 				ws = new WebSocket(websocketUrl);
 
-				ws.on('error', (error: {
-					message: any;
-				}) => {
+				ws.on('error', (error: {message: any;}) => {
+					console.warn('[websocket-ws] received error');
+
 					const errorData = {
 						message: 'WebSocket connection error',
 						description: error.message,
@@ -74,7 +77,19 @@ export class WebsocketTrigger implements INodeType {
 					throw new NodeApiError(this.getNode(), errorData);
 				});
 
+				ws.on('close', () => {
+					this.emit([
+						this.helpers.returnJsonArray([]),
+						this.helpers.returnJsonArray([]),
+						this.helpers.returnJsonArray([{
+							event: 'close'
+						}])
+					]);
+				});
+
 				ws.on('message', (data: any, isBinary: boolean) => {
+					console.debug('[websocket-ws] received new message');
+
 					let message = isBinary ? data : data.toString();
 					try {
 						message = JSON.parse(message)
@@ -93,14 +108,16 @@ export class WebsocketTrigger implements INodeType {
 							{
 								ws,
 							},
-						])
+						]),
+						this.helpers.returnJsonArray([])
 					]);
 				});
 
 				ws.on('open', () => {
-					console.log('[WS] connected');
+					console.debug('[websocket-ws] connected');
 
 					if(sendInitMessage) {
+						initMessage = (this.getNodeParameter('initMessage') || '') as string;
 						ws.send(initMessage)
 					}
 
@@ -110,7 +127,8 @@ export class WebsocketTrigger implements INodeType {
 							{
 								ws,
 							},
-						])
+						]),
+						this.helpers.returnJsonArray([])
 					]);
 				})
 			} catch (error) {

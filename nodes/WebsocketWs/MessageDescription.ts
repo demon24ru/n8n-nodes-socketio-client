@@ -23,6 +23,29 @@ export const messageOperations: INodeProperties[] = [
 	},
 ];
 
+export const closeOperations: INodeProperties[] = [
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: {
+			show: {
+				resource: ['connection'],
+			},
+		},
+		options: [
+			{
+				name: 'Close Connection',
+				value: 'close',
+				description: 'Close websocket connection',
+				action: 'Close websocket connection',
+			},
+		],
+		default: 'close',
+	},
+];
+
 export const messageFields: INodeProperties[] = [
 	{
 		displayName: 'Websocket Resource',
@@ -51,5 +74,22 @@ export const messageFields: INodeProperties[] = [
 		required: true,
 		default: '{}',
 		description: 'Message to send',
+	},
+];
+
+export const closeFields: INodeProperties[] = [
+	{
+		displayName: 'Websocket Resource',
+		name: 'websocketResource',
+		type: 'string',
+		displayOptions: {
+			show: {
+				operation: ['close'],
+				resource: ['connection'],
+			},
+		},
+		required: true,
+		default: 'ws',
+		description: 'WS resource field name given by trigger node',
 	},
 ];
