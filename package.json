@@ -35,8 +35,8 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "nodes": [
-      "dist/nodes/WebsocketWs/WebsocketOnMessage.node.js",
-      "dist/nodes/WebsocketWs/WebsocketSendMessage.node.js"
+      "dist/nodes/Websocket/Websocket.node.js",
+      "dist/nodes/Websocket/WebsocketTrigger.node.js"
     ]
   },
   "devDependencies": {
