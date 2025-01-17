@@ -28,14 +28,14 @@ export class WebsocketTrigger implements INodeType {
 				type: 'string',
 				default: '',
 				placeholder: 'wss://example.com/',
-				description: 'The URL of the websocket server to connect to',
+				description: 'URL of the websocket server to connect to',
 			},
 			{
 				displayName: 'Send Initial Message',
 				name: 'sendInitMessage',
 				type: 'boolean',
 				default: false,
-				description: 'Whether to send message immediately upon connecting',
+				description: 'Whether to send message to server immediately upon connecting',
 			},
 			{
 				displayName: 'Initial Message',
@@ -67,7 +67,7 @@ export class WebsocketTrigger implements INodeType {
 				ws = new WebSocket(websocketUrl);
 
 				ws.on('error', (error: {message: any;}) => {
-					console.warn('[websocket-ws] received error');
+					console.warn('[websocket-ws] connection error');
 
 					const errorData = {
 						message: 'WebSocket connection error',
