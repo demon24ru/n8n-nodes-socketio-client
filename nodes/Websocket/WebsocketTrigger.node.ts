@@ -20,8 +20,7 @@ export class WebsocketTrigger implements INodeType {
 			name: 'Websocket Connection & Message',
 		},
 		inputs: [],
-		outputs: ['main', 'main', 'main'],
-		outputNames: ['message', 'open', 'close'],
+		outputs: ['main'],
 		properties: [
 			{
 				displayName: 'Websocket URL',
@@ -79,8 +78,6 @@ export class WebsocketTrigger implements INodeType {
 
 				ws.on('close', () => {
 					this.emit([
-						this.helpers.returnJsonArray([]),
-						this.helpers.returnJsonArray([]),
 						this.helpers.returnJsonArray([{
 							event: 'close'
 						}])
@@ -100,16 +97,11 @@ export class WebsocketTrigger implements INodeType {
 					this.emit([
 						this.helpers.returnJsonArray([
 							{
+								event: 'message',
 								message,
 								ws,
 							},
 						]),
-						this.helpers.returnJsonArray([
-							{
-								ws,
-							},
-						]),
-						this.helpers.returnJsonArray([])
 					]);
 				});
 
@@ -122,13 +114,12 @@ export class WebsocketTrigger implements INodeType {
 					}
 
 					this.emit([
-						this.helpers.returnJsonArray([]),
 						this.helpers.returnJsonArray([
 							{
+								event: 'open',
 								ws,
 							},
 						]),
-						this.helpers.returnJsonArray([])
 					]);
 				})
 			} catch (error) {
