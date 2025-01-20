@@ -48,7 +48,7 @@ export const closeOperations: INodeProperties[] = [
 
 export const messageFields: INodeProperties[] = [
 	{
-		displayName: 'Websocket Resource',
+		displayName: 'Websocket Resource Field (Parameter Name)',
 		name: 'websocketResource',
 		type: 'string',
 		displayOptions: {
@@ -79,7 +79,7 @@ export const messageFields: INodeProperties[] = [
 
 export const closeFields: INodeProperties[] = [
 	{
-		displayName: 'Websocket Resource',
+		displayName: 'Websocket Resource Field (Parameter Name)',
 		name: 'websocketResource',
 		type: 'string',
 		displayOptions: {

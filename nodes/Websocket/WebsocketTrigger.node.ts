@@ -6,6 +6,7 @@ import {
 	NodeApiError,
 	NodeOperationError,
 } from 'n8n-workflow';
+
 import WebSocket from 'ws';
 
 export class WebsocketTrigger implements INodeType {
@@ -29,6 +30,13 @@ export class WebsocketTrigger implements INodeType {
 				default: '',
 				placeholder: 'wss://example.com/',
 				description: 'URL of the websocket server to connect to',
+			},
+			{
+				displayName: 'Return WS Resource',
+				name: 'returnWs',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to return ws resource. If you want to send back messages, this is required. However, your browser might freeze for a moment while displaying it in execution mode.',
 			},
 			{
 				displayName: 'Send Initial Message',
@@ -58,12 +66,14 @@ export class WebsocketTrigger implements INodeType {
 
 		let websocketUrl: string;
 		let sendInitMessage: boolean;
+		let returnWs: boolean;
 		let initMessage : string;
 
 		const startConsumer = async () => {
 			try {
 				websocketUrl = this.getNodeParameter('websocketUrl') as string;
 				sendInitMessage = (this.getNodeParameter('sendInitMessage') || false) as boolean;
+				returnWs = (this.getNodeParameter('returnWs') || false) as boolean;
 				ws = new WebSocket(websocketUrl);
 
 				ws.on('error', (error: {message: any;}) => {
@@ -99,7 +109,7 @@ export class WebsocketTrigger implements INodeType {
 							{
 								event: 'message',
 								message,
-								ws,
+								ws: returnWs ? ws : null,
 							},
 						]),
 					]);
@@ -117,7 +127,7 @@ export class WebsocketTrigger implements INodeType {
 						this.helpers.returnJsonArray([
 							{
 								event: 'open',
-								ws,
+								ws: returnWs ? ws : null,
 							},
 						]),
 					]);

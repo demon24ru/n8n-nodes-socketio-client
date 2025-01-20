@@ -6,8 +6,6 @@ import {
 	NodeOperationError,
 } from 'n8n-workflow';
 
-// import WebSocket from 'ws';
-
 import {
 	closeFields,
 	closeOperations,
