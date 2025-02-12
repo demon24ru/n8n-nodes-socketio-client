@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-websocket-ws",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Websocket (ws) nodes for n8n. Using ws-library instead of socket.io",
   "keywords": [
     "n8n-community-node-package"
