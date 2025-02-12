@@ -2,6 +2,8 @@
 
 # n8n-nodes-websockets-trigger
 
+![workflow.png](assets/workflow.png)
+
 This is an n8n community node. It lets you connect to any websocket instance and use its messages as a trigger to your workflow.
 
 
