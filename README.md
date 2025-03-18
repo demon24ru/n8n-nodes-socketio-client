@@ -1,6 +1,6 @@
 [![NPM](https://nodei.co/npm/n8n-nodes-websocket-ws.png)](https://npmjs.org/package/n8n-nodes-websocket-ws)
 
-# n8n-nodes-websockets-trigger
+# n8n-nodes-socketio-client-trigger
 
 ![workflow.png](assets/workflow.png)
 
