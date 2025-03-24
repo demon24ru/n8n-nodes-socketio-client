@@ -1,19 +1,19 @@
 {
-  "name": "n8n-nodes-websocket-ws",
+  "name": "n8n-nodes-socketio-client",
   "version": "0.4.0",
-  "description": "Websocket (ws) nodes for n8n. Using ws-library instead of socket.io",
+  "description": "SocketIO nodes for n8n. Using Socket.io-client library",
   "keywords": [
     "n8n-community-node-package"
   ],
   "license": "MIT",
   "homepage": "",
   "author": {
-    "name": "Nicolai Schober",
+    "name": "@demon24ru",
     "email": "sbz@schober.bz"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SBZ-git/n8n-nodes-websocket-ws/tree/master"
+    "url": "https://github.com/demon24ru/n8n-nodes-socketio-client/tree/master"
   },
   "engines": {
     "node": ">=18.10",
@@ -52,7 +52,7 @@
     "n8n-workflow": "*"
   },
   "dependencies": {
-    "@types/ws": "^8.5.13",
-    "ws": "^8.18.0"
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   }
 }

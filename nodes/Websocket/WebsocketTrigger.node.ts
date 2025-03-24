@@ -7,7 +7,7 @@ import {
 	NodeOperationError,
 } from 'n8n-workflow';
 
-import WebSocket from 'ws';
+import { io, Socket } from "socket.io-client";
 
 export class WebsocketTrigger implements INodeType {
 	description: INodeTypeDescription = {
@@ -18,18 +18,18 @@ export class WebsocketTrigger implements INodeType {
 		version: 1,
 		description: 'Connect to ws endpoint and trigger flow both on incoming message or websocket opening/closing',
 		defaults: {
-			name: 'Websocket Connection & Message',
+			name: 'SocketIO Connection & Message',
 		},
 		inputs: [],
 		outputs: ['main'],
 		properties: [
 			{
-				displayName: 'Websocket URL',
+				displayName: 'SocketIO URL',
 				name: 'websocketUrl',
 				type: 'string',
 				default: '',
-				placeholder: 'wss://example.com/',
-				description: 'URL of the websocket server to connect to',
+				placeholder: 'http://localhost:5000',
+				description: 'URL of the SocketIO server to connect to',
 			},
 			{
 				displayName: 'Return WS Resource',
@@ -62,7 +62,7 @@ export class WebsocketTrigger implements INodeType {
 	};
 
 	async trigger(this: ITriggerFunctions): Promise<ITriggerResponse> {
-		let ws: any = null;
+		let ws: Socket;
 
 		let websocketUrl: string;
 		let sendInitMessage: boolean;
@@ -74,19 +74,23 @@ export class WebsocketTrigger implements INodeType {
 				websocketUrl = this.getNodeParameter('websocketUrl') as string;
 				sendInitMessage = (this.getNodeParameter('sendInitMessage') || false) as boolean;
 				returnWs = (this.getNodeParameter('returnWs') || false) as boolean;
-				ws = new WebSocket(websocketUrl);
+				// Connect to the WebSocket server
+				ws = io(websocketUrl, {
+					reconnectionDelayMax: 10000,
+				});
+				ws.connect()
 
-				ws.on('error', (error: {message: any;}) => {
-					console.warn('[websocket-ws] connection error');
+				ws.on('connect_error', (error: {message: any;}) => {
+					console.warn('[socketio-client] connection error');
 
 					const errorData = {
-						message: 'WebSocket connection error',
+						message: 'SocketIO connection error',
 						description: error.message,
 					};
 					throw new NodeApiError(this.getNode(), errorData);
 				});
 
-				ws.on('close', () => {
+				ws.on('disconnect', () => {
 					this.emit([
 						this.helpers.returnJsonArray([{
 							event: 'close'
@@ -95,13 +99,13 @@ export class WebsocketTrigger implements INodeType {
 				});
 
 				ws.on('message', (data: any, isBinary: boolean) => {
-					console.debug('[websocket-ws] received new message');
+					console.debug('[socketio-client] received new message');
 
 					let message = isBinary ? data : data.toString();
 					try {
 						message = JSON.parse(message)
 					} catch (exception) {
-						console.warn('Unable to json parse websocket message: ' + message)
+						console.warn('Unable to json parse SocketIO message: ' + message)
 					}
 
 					this.emit([
@@ -115,8 +119,8 @@ export class WebsocketTrigger implements INodeType {
 					]);
 				});
 
-				ws.on('open', () => {
-					console.debug('[websocket-ws] connected');
+				ws.on('connect', () => {
+					console.debug('[socketio-client] connected');
 
 					if(sendInitMessage) {
 						initMessage = (this.getNodeParameter('initMessage') || '') as string;
@@ -145,7 +149,8 @@ export class WebsocketTrigger implements INodeType {
 		// The "closeFunction" function gets called by n8n whenever
 		// the workflow gets deactivated and can so clean up.
 		async function closeFunction() {
-			ws.terminate();
+			ws.offAny();
+			ws.disconnect();
 		}
 
 		// The "manualTriggerFunction" function gets called by n8n

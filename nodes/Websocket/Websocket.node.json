@@ -1,5 +1,5 @@
 {
-	"node": "n8n-nodes-websocket-ws.websocket",
+	"node": "n8n-nodes-socketio-client.websocket",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
 	"categories": ["Development"]
