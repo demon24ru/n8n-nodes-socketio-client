@@ -3,13 +3,14 @@
   "version": "0.4.0",
   "description": "SocketIO nodes for n8n. Using Socket.io-client library",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "socketio-client",
+    "socketio"
   ],
   "license": "MIT",
   "homepage": "",
   "author": {
-    "name": "@demon24ru",
-    "email": "sbz@schober.bz"
+    "name": "@demon24ru"
   },
   "repository": {
     "type": "git",
