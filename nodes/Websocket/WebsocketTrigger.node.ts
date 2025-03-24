@@ -98,10 +98,10 @@ export class WebsocketTrigger implements INodeType {
 					]);
 				});
 
-				ws.on('message', (data: any, isBinary: boolean) => {
+				ws.on('message', (data: any) => {
 					console.debug('[socketio-client] received new message');
 
-					let message = isBinary ? data : data.toString();
+					let message = data.toString();
 					try {
 						message = JSON.parse(message)
 					} catch (exception) {
