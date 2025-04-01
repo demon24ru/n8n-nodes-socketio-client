@@ -76,6 +76,7 @@ export class WebsocketTrigger implements INodeType {
 				returnWs = (this.getNodeParameter('returnWs') || false) as boolean;
 				// Connect to the WebSocket server
 				ws = io(websocketUrl, {
+					reconnection: true,
 					reconnectionDelayMax: 10000,
 				});
 				ws.connect()
